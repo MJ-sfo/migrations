@@ -54,7 +54,7 @@ The above command, you'll recall, creates 2 new files.
 
 Typically we'll edit both of these files as needed to get the database structure we want and set any validations we want to run in the model.
 
-Finally you of course must run `rake db:migrate`.  When you run rake `db:migrate` it alters the `schema.rb` file.  Then you commit the above files as well as the `db/schema.rb` file.
+Finally you of course must run `rails db:migrate`.  When you run rails `db:migrate` it alters the `schema.rb` file.  Then you commit the above files as well as the `db/schema.rb` file.
 
 >Note: Never directly edit schema.rb
 
@@ -99,7 +99,7 @@ end
 
 <details>
 <summary>After generating this, what do we need to run?</summary>
-`rake db:migrate`
+`rails db:migrate`
 </details>
 
 This will also change the file `db/schema.rb` updating it to include the new table structure.
@@ -201,22 +201,22 @@ Previously we said that migrations are forever, but that really only applies onc
 
 We can rollback (reverse) a migration using the command:
 
-`rake db:rollback`
+`rails db:rollback`
 
 Providing a step parameter allows us to rollback a specific number of migrations:
 
-`rake db:rollback STEP=2` rollsback 2 migrations.
+`rails db:rollback STEP=2` rollsback 2 migrations.
 
 
 You can also use the date stamp on the migrations to migrate (up or down) to a specific version:
 
-`rake db:migrate VERSION=20080906120000`
+`rails db:migrate VERSION=20080906120000`
 
 #### Practice 3
 
 <details>
 <summary>How can we reverse the last migration we ran? (the one to add color)</summary>
-`rake db:rollback`
+`rails db:rollback`
 </details>
 
 Once we've reversed that migration, let's delete it so we can make a new one.  `rm db/migrate/*add_color_to_cars.rb`
@@ -244,7 +244,7 @@ end
 ### Migration Rules:
 
 * Never edit a migration once it is merged.
-* Never edit the `schema.rb` file.  - This file should only change when you run `rake db:migrate`.
+* Never edit the `schema.rb` file.  - This file should only change when you run `rails db:migrate`.
 * Never alter the database structure without a migration.
 * Always run all migrations before submitting code for merge.  You want `schema.rb` to be up to date.
 
@@ -332,6 +332,6 @@ Also you can generate indexes when creating columns: `$ bin/rails generate migra
 
 ### Other commands
 
-* `rake db:schema:load` - setup the database structure using schema.rb (may be faster when you have hundreds of migrations)
-* `rake db:setup` - similar to `rake db:create db:migrate db:seed`
-* `rake db:drop` - destroy the database (if you run this in production you're FIRED!)
+* `rails db:schema:load` - setup the database structure using schema.rb (may be faster when you have hundreds of migrations)
+* `rails db:setup` - similar to `rails db:create db:migrate db:seed`
+* `rails db:drop` - destroy the database (if you run this in production you're FIRED!)
