@@ -1,5 +1,5 @@
 <!--
-Creator: Team editing by Cory and Travis
+Creator: @cofauver, @tgaff
 Market: SF
 -->
 
@@ -58,7 +58,7 @@ Finally you of course must run `rails db:migrate`.  When you run rails `db:migra
 
 >Note: Never directly edit schema.rb
 
-#### Practice 1
+#### Practice 1 - Create a Table
 
 Let's say we're building a website to sell used cars.  We know we need a few basic things to keep track of our cars; things like:
 
@@ -106,6 +106,8 @@ This will also change the file `db/schema.rb` updating it to include the new tab
 
 Afterwards you should commit your changes before moving on to work with this table.
 
+(STOP and COMMIT!)
+
 ### Migrations are forever
 
 Once a migration has been merged into the master branch; it is **forever**.
@@ -131,30 +133,35 @@ After your changes have left your machine the only way to undo or redo is to _wr
 
 In some cases we may already have a table but need to add a new column to it.  Alternatively we may want to remove an existing column.  How can we do this?
 
-Rails has migration generators for this, using respectively "AddXXXToYYY" or "RemoveXXXFromYYY".  For both of these "XXX" is a column-name and "YYY" represents the model.  
+Rails has migration generators for adding and removing tables, using respectively "AddXXXToYYY" or "RemoveXXXFromYYY" (you may also use lower_snake_case).  For both of these "XXX" is a column-name and "YYY" represents the model.
 
-Example:
+#### Practice 2 - Add a Column
+
+Let's a `vin` column to our `cars` table.
+
+To generate an empty migration file, you could run:
 
 `rails generate migration AddVinToCars`
 
-This generates an empty migration with the name `AddVinToCars`.  After running this you can edit the new migration to properly set the "vin" datatype (likely String).
-
 ```ruby
-# generated empty migration
+# db/migrate/yyyymmddnnnn_add_vin_to_cars.rb
 class AddVinToCars < ActiveRecord::Migration
   def change
+    # empty!
   end
 end
 ```
 ^ Not much there right? ^
 
-**A Better way:** We can also tell rails on the command-line which data-types to use and it'll generate appropriate code.
+Then you could manually edit the new migration to properly set the "vin" datatype (likely a String)...
 
-Example:
+**But there's a better way!!!**
 
-* add a vin column to the Car model: `rails generate migration AddVinToCars vin:string`
+Let's tell rails on the command-line which data-types to use and have it generate all the appropriate code.
 
-This generates a migration like:
+Add a vin column to the Car model: `rails generate migration AddVinToCars vin:string`
+
+This generates a migration like (which you'll have to check carefully):
 
 ```ruby
 class AddVinToCars < ActiveRecord::Migration
@@ -166,26 +173,43 @@ end
 
 > Note: you can add multiple columns simultaneously.
 
+Nice work! Now, don't forget!
+* `rails db:migrate:status` --> check for "down" migrations.
+* `rails db:migrate` --> apply your "down" changes to the database
+* `rails db:migrate:status` --> verify all your migrations are "up".
+
+(STOP and COMMIT!)
+
+#### Practice 3 - Remove a Column
+
 We can also remove a column:
 
-* remove street_address from User model: `rails generate migration RemoveStreetAddressFromUsers street_address:string`
+* remove the `vin` column from the `cars` table: `rails generate migration remove_vin_from_cars vin:string`
 
 This generates a migration like:
 
 ```rb
 class RemoveStreetAddressFromUsers < ActiveRecord::Migration
   def change
-    remove_column :users, :street_address, :string
+    #             :table, :column, :type
+    remove_column :cars,  :vin,    :string
   end
 end
 ```
 > Note: you must still specify the `column_name:datatype` when doing a remove. (Migrations should be reversible.)
 
+Don't forget to run your migrations!
+* `rails db:migrate:status` --> check for "down" migrations.
+* `rails db:migrate` --> apply your "down" changes to the database
+* `rails db:migrate:status` --> verify all your migrations are "up".
 
+(STOP and COMMIT!)
 
-#### Practice 2
+> Pro-Tip: We advise you to always commit your migration files separately from your `schema.rb`.
 
-Now let's say we've decided to add car _color_ to our model.  How can we do that?
+#### Practice 2 -- Add a column
+
+Now let's say we've decided to add a `color` column to our `cars` table.  How can we do that?
 
 * What datatype is color?
 
@@ -194,38 +218,57 @@ Now let's say we've decided to add car _color_ to our model.  How can we do that
 `rails g migration AddColorToCars color:string`
 </details>
 
+Don't forget to run your migrations!
+* `rails db:migrate:status` --> check for "down" migrations.
+* `rails db:migrate` --> apply your "down" changes to the database
+* `rails db:migrate:status` --> verify all your migrations are "up".
+
+(STOP and COMMIT!)
+
+> Pro-Tip: We advise you to always commit your migration files separately from your `schema.rb`.
 
 ### Undo
 
-Previously we said that migrations are forever, but that really only applies once the change leaves our local machine.  We may make changes to the last migration if it hasn't left our local development environment yet, and that may require us to re-run the same migration.  How else could we test it?
+Previously we said that migrations are forever, but that really only applies if we've pushed (or deployed) our local code.  We are permitted to make changes to the last migration if it hasn't left our local development environment yet.
 
 We can rollback (reverse) a migration using the command:
 
-`rails db:rollback`
+```
+rails db:rollback
+```
 
 Providing a step parameter allows us to rollback a specific number of migrations:
 
 `rails db:rollback STEP=2` rollsback 2 migrations.
 
-
 You can also use the date stamp on the migrations to migrate (up or down) to a specific version:
 
 `rails db:migrate VERSION=20080906120000`
 
-#### Practice 3
+> You are encouged to then run `rails db:migrate:status` to verify that your most recent migration(s) are listed as "down".
+
+Once you've rolled-back, you're welcome to manually make changes to the migration file.
+
+You may also safely delete the file (e.g. `git rm db/migrate/yyymmddnnnn_add_color_to_cars.rb`).
+
+> Warning: Never delete a migration that is "up". You *MUST* first rollback your migration before deleting the migration file.
+
+#### Practice 3 -- Undo adding `color` to `cars`.
 
 <details>
 <summary>How can we reverse the last migration we ran? (the one to add color)</summary>
 `rails db:rollback`
 </details>
 
-Once we've reversed that migration, let's delete it so we can make a new one.  `rm db/migrate/*add_color_to_cars.rb`
+Once we've reversed that migration, let's delete it so we can make a new one.  `git rm db/migrate/yyyymmddnnnn_add_color_to_cars.rb`
 
-Now let's create a new migration that adds color and mileage as columns.
+(STOP and COMMIT)
+
+Now let's create a new migration that adds `color` and `mileage` as columns.
 
 * What datatype is mileage?
 
-<details><summary>What's the command to create a migration to add color and mileage to the Cars table?</summary>
+<details><summary>What's the command to create a migration to add `color` and mileage to the `cars` table?</summary>
 `rails g migration AddDetailsToCars color:string mileage:decimal`
 
 This generates:
@@ -241,14 +284,23 @@ end
 
 </details>
 
-### Migration Rules:
+Don't forget to run your migrations!
+* `rails db:migrate:status` --> check for "down" migrations.
+* `rails db:migrate` --> apply your "down" changes to the database
+* `rails db:migrate:status` --> verify all your migrations are "up".
 
-* Never edit a migration once it is merged.
-* Never edit the `schema.rb` file.  - This file should only change when you run `rails db:migrate`.
-* Never alter the database structure without a migration.
-* Always run all migrations before submitting code for merge.  You want `schema.rb` to be up to date.
+(STOP and COMMIT!)
 
-### List of data-types
+> Pro-Tip: We advise you to always commit your migration files separately from your `schema.rb`.
+
+### The Rules of Migrations
+
+* Never edit/remove a migration once it is merged ("up").
+* Never directly modify the `db/schema.rb` file. (Only the `rails db:migrate` command is allowed to update `schema.rb`).
+* Never alter the database structure without a migration file.
+* Make sure that all your local migrations are "up" before pushing/deploying code. Your `schema.rb` should always reflect the _current_ state of the database. You `schema.rb` should be the same on every machine.
+
+### List of Column DataTypes
 
 Basic list:
 
@@ -332,6 +384,6 @@ Also you can generate indexes when creating columns: `$ bin/rails generate migra
 
 ### Other commands
 
-* `rails db:schema:load` - setup the database structure using schema.rb (may be faster when you have hundreds of migrations)
-* `rails db:setup` - similar to `rails db:create db:migrate db:seed`
+* `rails db:schema:load` - create your database by reading the `schema.rb` file (often faster than running *hundreds* of migration files sequentially).
+* `rails db:setup` - similar to running `rails db:create db:migrate db:seed`
 * `rails db:drop` - destroy the database (if you run this in production you're FIRED!)
