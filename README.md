@@ -24,7 +24,7 @@ Migrations are the history of commands that have adjusted your DB to bring it to
 <!-- call out the skills that are prerequisites -->
 *Before this workshop, developers should already be able to:*
 
-- Scaffold out a simple Rails CRUD app.
+- Scaffold out a simple, single-resource Rails CRUD app.
 - Generate a model and migration simultaneously using `rails g model ...`
 - Describe the role that ActiveRecord plays in your application.
 
