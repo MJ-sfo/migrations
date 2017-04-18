@@ -76,7 +76,9 @@ $ rails new practice -T -d=postgresql
 >We are using the -T (aka --skip-test-unit) and -d postgresql (aka --database=postgresql) options today -- postgresql is our preferred database. We'll talk about tests another day.
 
 <details><summary>What's the command to generate the new car model and migration?  Use make, model, and year as column names.</summary>
+
 `rails g model car make:string model:string year:integer`
+
 </details>
 
 What does this give us?
@@ -99,7 +101,9 @@ end
 
 <details>
 <summary>After generating this, what do we need to run?</summary>
+
 `rails db:migrate`
+
 </details>
 
 This will also change the file `db/schema.rb` updating it to include the new table structure.
@@ -215,7 +219,9 @@ Now let's say we've decided to add a `color` column to our `cars` table.  How ca
 
 <details>
 <summary>What is the terminal command to create the new migration to change the cars table?</summary>
+
 `rails g migration AddColorToCars color:string`
+
 </details>
 
 Don't forget to run your migrations!
@@ -257,7 +263,9 @@ You may also safely delete the file (e.g. `git rm db/migrate/yyymmddnnnn_add_col
 
 <details>
 <summary>How can we reverse the last migration we ran? (the one to add color)</summary>
+
 `rails db:rollback`
+
 </details>
 
 Once we've reversed that migration, let's delete it so we can make a new one.  `git rm db/migrate/yyyymmddnnnn_add_color_to_cars.rb`
@@ -269,6 +277,7 @@ Now let's create a new migration that adds `color` and `mileage` as columns.
 * What datatype is mileage?
 
 <details><summary>What's the command to create a migration to add `color` and mileage to the `cars` table?</summary>
+
 `rails g migration AddDetailsToCars color:string mileage:decimal`
 
 This generates:
