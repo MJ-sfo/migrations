@@ -139,7 +139,7 @@ In some cases we may already have a table but need to add a new column to it.  A
 
 Rails has migration generators for adding and removing tables, using respectively "AddXXXToYYY" or "RemoveXXXFromYYY" (you may also use lower_snake_case).  For both of these "XXX" is a column-name and "YYY" represents the model.
 
-#### Practice 2 - Add a Column
+#### Example - Add a Column
 
 Let's a `vin` column to our `cars` table.
 
@@ -184,7 +184,7 @@ Nice work! Now, don't forget!
 
 (STOP and COMMIT!)
 
-#### Practice 3 - Remove a Column
+#### Example - Remove a Column
 
 We can also remove a column:
 
